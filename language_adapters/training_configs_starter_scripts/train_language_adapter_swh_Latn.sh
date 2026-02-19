@@ -4,11 +4,11 @@
 export WANDB_MODE=online
 
 # Configurable parameters
-TOKENIZED_DIR="/upb/users/j/joeldag/profiles/unix/cs/tokenized_data_subsets/gemma3-4b-pt/swh_Latn"
+TOKENIZED_DIR="${WORK_ROOT:-/path/to/work_root}/tokenized_data_subsets/gemma3-4b-pt/swh_Latn"
 TOKENIZER_PATH="google/gemma-3-4b-pt"
 MODEL_NAME="google/gemma-3-4b-pt"
-OUTPUT_DIR="/upb/users/j/joeldag/profiles/unix/cs/results_language_adapters/gemma3-4b-pt/swh_Latn"
-LOGGING_DIR="/upb/users/j/joeldag/profiles/unix/cs/results_language_adapters/gemma3-4b-pt/swh_Latn/logs"
+OUTPUT_DIR="${WORK_ROOT:-/path/to/work_root}/results_language_adapters/gemma3-4b-pt/swh_Latn"
+LOGGING_DIR="${WORK_ROOT:-/path/to/work_root}/results_language_adapters/gemma3-4b-pt/swh_Latn/logs"
 mkdir -p "$LOGGING_DIR"
 
 LOAD_IN_4BIT=true
@@ -52,7 +52,7 @@ EVAL_LIMIT=900
 EVAL_CUDA_DEVICES="3"
 export CUDA_VISIBLE_DEVICES="$EVAL_CUDA_DEVICES"
 EVAL_LOG_SAMPLES=true
-EVAL_WANDB_PROJECT="gemma3-4b-pt-swh_Latn-lanauge-adapter"
+EVAL_WANDB_PROJECT="gemma3-4b-pt-swh_Latn-language-adapter"
 LOG_FILE="$OUTPUT_DIR/training.log"
 
 # Run training

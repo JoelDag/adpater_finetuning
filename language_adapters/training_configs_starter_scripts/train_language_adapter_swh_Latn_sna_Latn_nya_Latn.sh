@@ -4,11 +4,11 @@
 export WANDB_MODE=online
 
 # Configurable parameters
-TOKENIZED_DIR="/upb/users/j/joeldag/profiles/unix/cs/tokenized_data_subsets/mistral7b/swh_Latn_sna_Latn_nya_Latn/"
+TOKENIZED_DIR="${WORK_ROOT:-/path/to/work_root}/tokenized_data_subsets/mistral7b/swh_Latn_sna_Latn_nya_Latn/"
 TOKENIZER_PATH="mistralai/Mistral-7B-v0.3"
 MODEL_NAME="mistralai/Mistral-7B-v0.3"
-OUTPUT_DIR="/upb/users/j/joeldag/profiles/unix/cs/results_language_adapters/mistral7b/swh_Latn_sna_Latn_nya_Latn"
-LOGGING_DIR="/upb/users/j/joeldag/profiles/unix/cs/results_language_adapters/mistral7b/swh_Latn_sna_Latn_nya_Latn/logs"
+OUTPUT_DIR="${WORK_ROOT:-/path/to/work_root}/results_language_adapters/mistral7b/swh_Latn_sna_Latn_nya_Latn"
+LOGGING_DIR="${WORK_ROOT:-/path/to/work_root}/results_language_adapters/mistral7b/swh_Latn_sna_Latn_nya_Latn/logs"
 mkdir -p "$LOGGING_DIR"
 
 LOAD_IN_4BIT=true

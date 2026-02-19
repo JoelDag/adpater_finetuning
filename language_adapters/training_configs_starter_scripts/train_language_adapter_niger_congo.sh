@@ -5,13 +5,13 @@ export WANDB_MODE=online
 export CUDA_VISIBLE_DEVICES=1
 
 # Configurable parameters
-TOKENIZED_DIR="/data/joel/tokenized_adapter_subsets/mistral7b/final_model/niger_congo"
-TOKENIZER_PATH="/data/joel/extended_tokenizers/mistral7b/niger_congo/"
+TOKENIZED_DIR="${DATA_ROOT:-/path/to/data_root}/tokenized_adapter_subsets/mistral7b/final_model/niger_congo"
+TOKENIZER_PATH="${DATA_ROOT:-/path/to/data_root}/extended_tokenizers/mistral7b/niger_congo/"
 RESIZE_TOKEN_EMBEDDINGS=True
 SHUFFLE_DATASET=True
 MODEL_NAME="mistralai/Mistral-7B-v0.3"
-OUTPUT_DIR="/data/joel/results_language_adapters/mistral7b/final_model/niger_congo"
-LOGGING_DIR="/data/joel/results_language_adapters/mistral7b/final_model/niger_congo/logs"
+OUTPUT_DIR="${DATA_ROOT:-/path/to/data_root}/results_language_adapters/mistral7b/final_model/niger_congo"
+LOGGING_DIR="${DATA_ROOT:-/path/to/data_root}/results_language_adapters/mistral7b/final_model/niger_congo/logs"
 
 LOAD_IN_4BIT=true
 BNB_4BIT_USE_DOUBLE_QUANT=true
@@ -53,7 +53,7 @@ EVAL_BATCH_SIZE=8
 EVAL_LIMIT=10
 EVAL_CUDA_DEVICES="1"
 EVAL_LOG_SAMPLES=true
-EVAL_WANDB_PROJECT="gemma3-4b-pt-niger-congo-lanauge-adapter"
+EVAL_WANDB_PROJECT="gemma3-4b-pt-niger-congo-language-adapter"
 
 
 # Run training

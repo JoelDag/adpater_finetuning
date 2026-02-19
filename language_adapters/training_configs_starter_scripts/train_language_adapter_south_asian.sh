@@ -5,11 +5,11 @@ export WANDB_MODE=online
 export CUDA_VISIBLE_DEVICES=2
 
 # Configurable parameters
-TOKENIZED_DIR="/upb/users/j/joeldag/profiles/unix/cs/tokenized_data_subsets/gemma3-4b-pt/south_asian"
-TOKENIZER_PATH="/upb/users/j/joeldag/profiles/unix/cs/tokenized_data_subsets/gemma_extended_tokenizers/south_asian/"
+TOKENIZED_DIR="${WORK_ROOT:-/path/to/work_root}/tokenized_data_subsets/gemma3-4b-pt/south_asian"
+TOKENIZER_PATH="${WORK_ROOT:-/path/to/work_root}/tokenized_data_subsets/gemma_extended_tokenizers/south_asian/"
 MODEL_NAME="google/gemma-3-4b-pt"
-OUTPUT_DIR="/upb/users/j/joeldag/profiles/unix/cs/results_language_adapters/gemma3-4b-pt/south_asian"
-LOGGING_DIR="/upb/users/j/joeldag/profiles/unix/cs/results_language_adapters/gemma3-4b-pt/south_asian/logs"
+OUTPUT_DIR="${WORK_ROOT:-/path/to/work_root}/results_language_adapters/gemma3-4b-pt/south_asian"
+LOGGING_DIR="${WORK_ROOT:-/path/to/work_root}/results_language_adapters/gemma3-4b-pt/south_asian/logs"
 
 LOAD_IN_4BIT=true
 BNB_4BIT_USE_DOUBLE_QUANT=true
@@ -51,7 +51,7 @@ EVAL_BATCH_SIZE=10
 EVAL_LIMIT=200
 EVAL_CUDA_DEVICES="2"
 EVAL_LOG_SAMPLES=true
-EVAL_WANDB_PROJECT="gemma3-4b-pt-niger-congo-lanauge-adapter"
+EVAL_WANDB_PROJECT="gemma3-4b-pt-niger-congo-language-adapter"
 
 
 # Run training

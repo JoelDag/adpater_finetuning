@@ -5,13 +5,8 @@ from multiprocessing import freeze_support
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import os
-import logging
 import json
 import argparse
-import time
-import random
-import requests
-import json
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Sample data from fineweb-2 dataset.')
@@ -19,7 +14,7 @@ def parse_arguments():
     parser.add_argument('--num_languages', type=lambda x: int(x) if x != 'all' else 'all', default=500,
                         help='Number of languages to sample from, or "all" to use all available languages')
     parser.add_argument('--output_dir', type=str, default='./fineweb2_subset')
-    parser.add_argument('--meta_file', type=str, default='./sampler/fineweb2_meta.json')
+    parser.add_argument('--meta_file', type=str, default=os.path.join(os.path.dirname(__file__), 'fineweb2_meta.json'))
     parser.add_argument('--dont_include_english', action='store_true')
     parser.add_argument('--num_proc', type=int, default=1, help='max. Number of processes, each will download a single language concurrently')
     return parser.parse_args()
@@ -46,9 +41,9 @@ def load_data(total_docs: int, num_languages: int | str, dont_include_english: b
     selected_languages = selected_languages[::-1]
     TASKS = []
     if not dont_include_english:
-        fair_share_per_lang = total_docs // num_languages
-    else:
         fair_share_per_lang = total_docs // (num_languages + 1)
+    else:
+        fair_share_per_lang = total_docs // num_languages
 
     remaining_docs = total_docs
     for i, lang in enumerate(selected_languages):
@@ -73,9 +68,9 @@ def load_data(total_docs: int, num_languages: int | str, dont_include_english: b
 
         remaining_docs -= docs_to_sample
         if dont_include_english:
-            fair_share_per_lang = remaining_docs // (num_languages - i)
+            fair_share_per_lang = remaining_docs // max(1, (num_languages - i - 1))
         else:
-            fair_share_per_lang = remaining_docs // (num_languages - i + 1)
+            fair_share_per_lang = remaining_docs // max(1, (num_languages - i))
 
     if not dont_include_english:
         english_docs_to_sample = max(fair_share_per_lang, remaining_docs)

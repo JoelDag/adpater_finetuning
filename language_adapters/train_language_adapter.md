@@ -46,5 +46,5 @@ Run the script:
 
 ## Visualize results with TensorBoard
 
-To monitor training progress you can visualize the resutls with vs code tensorboard extension.
-Download the extension, when using it, point to the log dir wherer training evaluation results are saved
+To monitor training progress, you can visualize the results with the VS Code TensorBoard extension.
+When using it, point to the log directory where training and evaluation outputs are stored.

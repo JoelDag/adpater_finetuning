@@ -1,0 +1,4 @@
+{
+  "adapter_1": "/absolute/path/to/adapter_checkpoint_1",
+  "adapter_2": "/absolute/path/to/adapter_checkpoint_2"
+}

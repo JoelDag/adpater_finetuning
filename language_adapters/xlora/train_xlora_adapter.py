@@ -1,3 +1,4 @@
+import json
 import os
 import torch
 from datasets import load_from_disk
@@ -6,9 +7,22 @@ from transformers import (
     DataCollatorForLanguageModeling, BitsAndBytesConfig, AutoConfig
 )
 import xlora
-from lm_harness_eval import LMEvalCallback
 
-def train_model(tokenized_data_dir, model_name, output_dir, logging_dir):
+def load_adapters(adapters_json_path):
+    with open(adapters_json_path, "r", encoding="utf-8") as f:
+        adapters = json.load(f)
+
+    if not isinstance(adapters, dict) or not adapters:
+        raise ValueError("--adapters_json must contain a non-empty JSON object of {adapter_name: adapter_path}.")
+
+    missing_paths = [path for path in adapters.values() if not os.path.exists(path)]
+    if missing_paths:
+        raise FileNotFoundError(f"Adapter paths not found: {missing_paths}")
+
+    return adapters
+
+
+def train_model(tokenized_data_dir, model_name, output_dir, logging_dir, adapters_json):
     dataset = load_from_disk(tokenized_data_dir)
     dataset = dataset.shuffle(seed=42)
     
@@ -40,6 +54,7 @@ def train_model(tokenized_data_dir, model_name, output_dir, logging_dir):
     print("Model device Map:", model.hf_device_map)
     config = AutoConfig.from_pretrained(model_name)
 
+    adapters = load_adapters(adapters_json)
     model.config.use_cache = False
     model = xlora.add_xlora_to_model(
     model=model,
@@ -49,10 +64,7 @@ def train_model(tokenized_data_dir, model_name, output_dir, logging_dir):
             xlora_depth=1,
             device=torch.device("cuda"),
             use_trainable_adapters=False,
-            adapters = {
-                "adapter_1": "/upb/users/j/joeldag/profiles/unix/cs/HTYLLM-PG/language_adapters/xlora/mistral_best_adpater_checkpoints/jav_Latn_sun_Latn_500_best_checkpoint",
-                "adapter_2": "/upb/users/j/joeldag/profiles/unix/cs/HTYLLM-PG/language_adapters/xlora/mistral_best_adpater_checkpoints/swh_Latn_sna_Latn_nya_Latn_2500_best_checkpoint",
-            }
+            adapters=adapters,
         ),
         verbose=True
     )
@@ -107,7 +119,8 @@ if __name__ == "__main__":
     parser.add_argument("--model_name", required=True)
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--logging_dir", required=True)
+    parser.add_argument("--adapters_json", required=True, help="JSON file containing adapter mappings.")
     args = parser.parse_args()
 
     torch.backends.cuda.matmul.allow_tf32 = True
-    train_model(args.tokenized_dir, args.model_name, args.output_dir, args.logging_dir)
+    train_model(args.tokenized_dir, args.model_name, args.output_dir, args.logging_dir, args.adapters_json)

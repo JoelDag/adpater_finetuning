@@ -1,18 +1,42 @@
-.venv
-data
-language_adapters/results
-.venv_calm
-fineweb2_subset
-logs
+# Virtual environments
+.venv/
+.venv_calm/
+venv/
+
+# Python caches and build artifacts
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# IDE/editor
+.idea/
+.vscode/
 launch.json
-language_adapters/xlora/venv-jupyterhub
-language_adapters/xlora/adapter_*
-language_adapters/xlora/check*
+
+# Local data and run outputs
+data/
+fineweb2_subset/
+logs/
+language_adapters/results/
 wandb/
+*.log
 *output.log*
-language_adapters/xlora/mistral_best_adpater_checkpoints/**/adapter_model.safetensors
-language_adapters/xlora/mistral_best_adpater_checkpoints/**/optimizer.pt
-language_adapters/xlora/mistral_best_adpater_checkpoints
-.idea
+*.out
+
+# Model and training artifacts
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+checkpoint-*/
+language_adapters/xlora/adapter_*/
+language_adapters/xlora/check*/
+language_adapters/xlora/mistral_best_adpater_checkpoints/
+
+# Misc
 **/lang2vec_cache/**
-**/__pycache__
+.DS_Store

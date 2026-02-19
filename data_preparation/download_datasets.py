@@ -5,7 +5,7 @@ from datasets import load_dataset
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--datasets", nargs="+", required=True)
-    parser.add_argument("--hf_cache_dir", default="/data/hf_cache/")
+    parser.add_argument("--hf_cache_dir", default=os.getenv("HF_CACHE_DIR", os.path.expanduser("~/.cache/huggingface")))
     args = parser.parse_args()
 
     os.environ["HF_HOME"] = args.hf_cache_dir

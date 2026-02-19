@@ -1,15 +1,18 @@
 #!/bin/bash
 
+set -euo pipefail
+
 # Environment setup
 export WANDB_MODE=online
-export CUDA_VISIBLE_DEVICES=1
+export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-1}"
 
 # Configurable parameters
-TOKENIZED_DIR="/data/joel/tokenized_adapter_subsets/mistral7b/swh_Latn_sna_Latn_nya_Latn_south_asian"
-TOKENIZER="mistralai/Mistral-7B-v0.3"
-MODEL_NAME="mistralai/Mistral-7B-v0.3"
-OUTPUT_DIR="/data/joel/results_language_adapters/xlora/mistral7b/swh_Latn_sna_Latn_nya_Latn_south_asian"
+TOKENIZED_DIR="${TOKENIZED_DIR:-./tokenized_data}"
+TOKENIZER="${TOKENIZER:-mistralai/Mistral-7B-v0.3}"
+MODEL_NAME="${MODEL_NAME:-mistralai/Mistral-7B-v0.3}"
+OUTPUT_DIR="${OUTPUT_DIR:-./results/xlora/south_asian}"
 LOGGING_DIR="$OUTPUT_DIR/logs"
+ADAPTERS_JSON="${ADAPTERS_JSON:-./adapters.example.json}"
 mkdir -p "$LOGGING_DIR"
 
 TRAIN_BATCH_SIZE=10
@@ -40,7 +43,7 @@ RESUME_FROM_CHECKPOINT=True
 
 EVAL_BATCH_SIZE=10
 EVAL_LIMIT=200
-EVAL_CUDA_DEVICES="2"
+EVAL_CUDA_DEVICES="${EVAL_CUDA_DEVICES:-2}"
 export CUDA_VISIBLE_DEVICES="$EVAL_CUDA_DEVICES"
 EVAL_LOG_SAMPLES=true
 EVAL_WANDB_PROJECT="mistral-7b_xlora_asian_swh_sna"
@@ -53,6 +56,7 @@ nohup python train_xlora_adapter_enhanced.py \
   --model_name "$MODEL_NAME" \
   --output_dir "$OUTPUT_DIR" \
   --logging_dir "$LOGGING_DIR" \
+  --adapters_json "$ADAPTERS_JSON" \
   --train_batch_size "$TRAIN_BATCH_SIZE" \
   --gradient_accumulation_steps "$GRADIENT_ACCUMULATION_STEPS" \
   --num_train_epochs "$NUM_TRAIN_EPOCHS" \

@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-TOKENIZED_DATA_DIR="/data/upb/users/j/joeldag/profiles/unix/cs/tokenized_data_subsets/tur_Latn/"
+TOKENIZED_DATA_DIR="${WORK_ROOT:-/path/to/work_root}/tokenized_data_subsets/tur_Latn/"
 MODEL_NAME="bigscience/bloom-560m"
-OUTPUT_DIR="/data/upb/users/j/joeldag/profiles/unix/cs/results_language_adapters/tur_Latn/"
+OUTPUT_DIR="${WORK_ROOT:-/path/to/work_root}/results_language_adapters/tur_Latn/"
 LOGGING_DIR="$OUTPUT_DIR/logs"
 
 export WANDB_MODE=online

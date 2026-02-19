@@ -4,11 +4,11 @@
 export WANDB_MODE=online
 
 # Configurable parameters
-TOKENIZED_DIR="/upb/users/j/joeldag/profiles/unix/cs/tokenized_data_subsets/gemma3-4b-pt/tur_Latn/"
+TOKENIZED_DIR="${WORK_ROOT:-/path/to/work_root}/tokenized_data_subsets/gemma3-4b-pt/tur_Latn/"
 TOKENIZER_PATH="google/gemma-3-4b-pt"
 MODEL_NAME="google/gemma-3-4b-pt"
-OUTPUT_DIR="/upb/users/j/joeldag/profiles/unix/cs/results_language_adapters/gemma3-4b-pt/tur_Latn"
-LOGGING_DIR="/upb/users/j/joeldag/profiles/unix/cs/results_language_adapters/gemma3-4b-pt/tur_Latn/logs"
+OUTPUT_DIR="${WORK_ROOT:-/path/to/work_root}/results_language_adapters/gemma3-4b-pt/tur_Latn"
+LOGGING_DIR="${WORK_ROOT:-/path/to/work_root}/results_language_adapters/gemma3-4b-pt/tur_Latn/logs"
 mkdir -p "$LOGGING_DIR"
 
 LOAD_IN_4BIT=true

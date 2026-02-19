@@ -10,14 +10,14 @@
 #SBATCH --partition=gpu
 #SBATCH --time=10:00:00
 #SBATCH --account=hpc-prf-merlin
-#SBATCH --output=/scratch/hpc-prf-merlin/htyllm-pg/joel/results_language_adapter/mistral7b/niger_congo/logs/mistral_adapter_%j.log
-#SBATCH --error=/scratch/hpc-prf-merlin/htyllm-pg/joel/results_language_adapter/mistral7b/niger_congo/logs/mistral_adapter_%j.log
+#SBATCH --output=/path/to/results_language_adapter/mistral7b/niger_congo/logs/mistral_adapter_%j.log
+#SBATCH --error=/path/to/results_language_adapter/mistral7b/niger_congo/logs/mistral_adapter_%j.log
 
 head_node=$(hostname)
 head_node_ip=$(hostname --ip-address)
 echo "Running on node: $head_node ($head_node_ip)"
 
-eval "$(/pc2/users/j/joeldag/miniconda3/bin/conda shell.bash hook)"
+eval "$(${CLUSTER_HOME:-/path/to/cluster_home}/miniconda3/bin/conda shell.bash hook)"
 conda activate htyllm
 
 # Environment setup
@@ -26,18 +26,18 @@ export WANDB_MODE=online
 #export FLASH_ATTENTION_2=1
 #export FLASH_ATTENTION=1
 export FLASH_ATTENTION_DISABLE=1
-export TRANSFORMERS_CACHE=/scratch/hpc-prf-merlin/shared_cache/huggingface
-export HF_HOME=/scratch/hpc-prf-merlin/shared_cache/huggingface
-export HF_DATASETS_CACHE=/scratch/hpc-prf-merlin/shared_cache/huggingface/datasets
+export TRANSFORMERS_CACHE="${HF_CACHE_ROOT:-/path/to/huggingface_cache}"
+export HF_HOME="${HF_CACHE_ROOT:-/path/to/huggingface_cache}"
+export HF_DATASETS_CACHE="${HF_CACHE_ROOT:-/path/to/huggingface_cache}/datasets"
 
 # Configurable parameters
-TOKENIZED_DIR="/scratch/hpc-prf-merlin/htyllm-pg/joel/tokenized_adapter_subsets/niger_congo"
-TOKENIZER_PATH="/scratch/hpc-prf-merlin/htyllm-pg/joel/extended_tokenizers/niger_congo/"
+TOKENIZED_DIR="${WORK_ROOT:-/path/to/work_root}/tokenized_adapter_subsets/niger_congo"
+TOKENIZER_PATH="${WORK_ROOT:-/path/to/work_root}/extended_tokenizers/niger_congo/"
 RESIZE_TOKEN_EMBEDDINGS=True
 SHUFFLE_DATASET=True
 MODEL_NAME="mistralai/Mistral-7B-v0.3"
-OUTPUT_DIR="/scratch/hpc-prf-merlin/htyllm-pg/joel/results_language_adapter/mistral7b/niger_congo"
-LOGGING_DIR="/scratch/hpc-prf-merlin/htyllm-pg/joel/results_language_adapter/mistral7b/niger_congo/logs"
+OUTPUT_DIR="${WORK_ROOT:-/path/to/work_root}/results_language_adapter/mistral7b/niger_congo"
+LOGGING_DIR="${WORK_ROOT:-/path/to/work_root}/results_language_adapter/mistral7b/niger_congo/logs"
 
 LOAD_IN_4BIT=true
 BNB_4BIT_USE_DOUBLE_QUANT=true
@@ -127,4 +127,3 @@ srun python ../train_language_adapter.py \
   --eval_limit $EVAL_LIMIT \
   --eval_cuda_devices "$EVAL_CUDA_DEVICES" \
   --eval_wandb_project "$EVAL_WANDB_PROJECT"
-

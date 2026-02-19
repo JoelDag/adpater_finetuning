@@ -75,7 +75,7 @@ This is required if you want to develop remotely with vs code (as far as i know)
    5. Enter yor uni password when you are asked for it
 
 You should then be connected to `htyllm-pg.cs.uni-paderborn.de` directly from VS Code. You can open your project folders and start developing. The integrated terminal in VS Code will also be directly connected to the `htyllm-pg` host.
-I then suggest you to clone our repository, create a python venv, install necessary requiremetns. You should be able to develop then.
+I then suggest cloning the repository, creating a Python virtual environment, and installing the necessary requirements. You should then be ready to develop.
 
 
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# For langauge adapter training, we first subsample data, 
+# For language adapter training, we first subsample data,
 # then tokenize it,
 # then count amount of tokens. 
 # Afterwards data is tokenized and saved and thus prepared for training
@@ -11,12 +11,12 @@
 #LANGS="apc_Arab,arz_Arab,ary_Arab,ars_Arab,heb_Hebr"
 #LANGS="vie_Latn,tha_Thai,jav_Latn,sun_Latn,khm_Khmr" #south asian
 # LANGS=heb_Hebr #test with only hebrew
-# LANGS="hin_Deva,urd_Arab,mar_Deva,ben_Beng,pan_Guru" #indo-aryan lanauges 25000 samplesfor each
-# LANGS="swh_Latn,yor_Latn,ibo_Latn,wol_Latn,zul_Latn" #niger-congo lanauges
+# LANGS="hin_Deva,urd_Arab,mar_Deva,ben_Beng,pan_Guru" # Indo-Aryan languages, 25000 samples each
+# LANGS="swh_Latn,yor_Latn,ibo_Latn,wol_Latn,zul_Latn" # Niger-Congo languages
 # LANGS="spa_Latn"
-# INPUT_DIR="/data/upb/users/j/joeldag/profiles/unix/cs/fineweb2_subset"
-# SUB_SAMPLE_OUTPUT_DIR="/data/upb/users/j/joeldag/profiles/unix/cs/language_adapter_subsets/south_asian"
-# LINES=28000 # this is per langauge###
+# INPUT_DIR="${WORK_ROOT:-/path/to/work_root}/fineweb2_subset"
+# SUB_SAMPLE_OUTPUT_DIR="${WORK_ROOT:-/path/to/work_root}/language_adapter_subsets/south_asian"
+# LINES=28000 # this is per language
 
 # python subsample_data.py \
 #   --langs "$LANGS" \
@@ -25,12 +25,12 @@
 #   --lines "$LINES"
 
 
-#----- 2. Toknenized subsampled data ----- 
+#----- 2. Tokenize subsampled data -----
 #DATA_DIR=$SUB_SAMPLE_OUTPUT_DIR
-DATA_DIR="/data/adapter_fineweb2_subset/niger_congo/"
-TOKENIZED_DATA_DIR="/data/joel/tokenized_adapter_subsets/mistral7b/final_model/niger_congo"
-MODEL_NAME="/data/joel/extended_tokenizers/mistral7b/niger_congo/" # path to tokenizer not only model
-CACHE_DIR="/data/upb/users/j/joeldag/profiles/unix/cs/cache_dir"
+DATA_DIR="${DATA_DIR:-./data/adapter_fineweb2_subset/niger_congo}"
+TOKENIZED_DATA_DIR="${DATA_ROOT:-/path/to/data_root}/tokenized_adapter_subsets/mistral7b/final_model/niger_congo"
+MODEL_NAME="${DATA_ROOT:-/path/to/data_root}/extended_tokenizers/mistral7b/niger_congo/" # path to tokenizer not only model
+CACHE_DIR="${WORK_ROOT:-/path/to/work_root}/cache_dir"
 NUM_PROC=4
 
 python tokenize_subsampled_data.py \

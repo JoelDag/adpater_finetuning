@@ -22,7 +22,7 @@ source ~/miniconda3/bin/activate icebreaker
 
 # TOKENIZED_DATA_DIR="/data/fineweb2_subset_belebele_tokenized_bloom-560m"
 # MODEL_NAME="bigscience/bloom-560m"
-# OUTPUT_DIR="/data/joel/bloom560m-belebele-languages"
+# OUTPUT_DIR="${DATA_ROOT:-/path/to/data_root}/bloom560m-belebele-languages"
 # LOGGING_DIR="$OUTPUT_DIR/logs"
 
 srun torchrun \

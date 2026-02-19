@@ -1,16 +1,25 @@
-from transformers import AutoConfig, AutoModelForCausalLM
+import argparse
+
 from peft import PeftModel
+from transformers import AutoConfig, AutoModelForCausalLM
 
-base_id   = "mistralai/Mistral-7B-Instruct-v0.3"
-adapter_path = "/data/joel/results_language_adapters/xlora/mistral7b/depth_1_jav_Latn_sun_Latn_swh_Latn_sna_Latn_nya_Latn/checkpoint-50/"
 
-cfg = AutoConfig.from_pretrained(base_id)
-cfg.use_cache = False
+def main():
+    parser = argparse.ArgumentParser(description="Load a base model with an xLoRA adapter.")
+    parser.add_argument("--base-id", default="mistralai/Mistral-7B-Instruct-v0.3")
+    parser.add_argument("--adapter-path", required=True)
+    args = parser.parse_args()
 
-base  = AutoModelForCausalLM.from_pretrained(
-            base_id, config=cfg,
-            torch_dtype="auto", device_map="auto")
+    cfg = AutoConfig.from_pretrained(args.base_id)
+    cfg.use_cache = False
 
-model = PeftModel.from_pretrained(base, adapter_path, local_files_only=True)
-model.eval()
-print("Model loaded successfully with XLORA adapters.")
+    base = AutoModelForCausalLM.from_pretrained(
+        args.base_id, config=cfg, torch_dtype="auto", device_map="auto"
+    )
+    model = PeftModel.from_pretrained(base, args.adapter_path, local_files_only=True)
+    model.eval()
+    print("Model loaded successfully with XLORA adapters.")
+
+
+if __name__ == "__main__":
+    main()

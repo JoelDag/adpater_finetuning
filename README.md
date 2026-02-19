@@ -1,50 +1,67 @@
-Icebreaker Project Documentation:
+# Adapter Fine-Tuning for Multilingual LLMs
 
-Languages and Training Data:
+This repository contains end-to-end code for:
+- multilingual data preparation and sampling,
+- tokenizer extension and tokenization pipelines,
+- parameter-efficient adapter training (LoRA / xLoRA),
+- LM Harness-based evaluation and experiment logging.
 
-English: https://huggingface.co/datasets/HuggingFaceTB/cosmopedia  
-Deutsch: https://www.kaggle.com/datasets/rtatman/3-million-german-sentences  
-Japanese: https://huggingface.co/datasets/izumi-lab/llm-japanese-dataset  
-Bengali: https://huggingface.co/datasets/HydraIndicLM/bengali_alpaca_dolly_67k  
-Chinese: https://huggingface.co/datasets/opencsg/Fineweb-Edu-Chinese-V2.1  
+The codebase is organized to support reproducible training workflows for large language models, with scripts for both local and cluster environments.
 
-Core Model:
+## Repository Structure
 
-Decision to be made, Pitch Models until 16:00 10.04.2025 in Matrix Chat
+- `data_preparation/`: dataset download and preprocessing utilities
+- `data_sampler/`: FineWeb2 sampling and dataset sizing tools
+- `training/`: baseline training scripts
+- `language_adapters/`: adapter-focused training, tokenizer extension, and analysis
+- `language_adapters/xlora/`: xLoRA training and inference utilities
+- `evaluation/`: LM Harness evaluation scripts and result export tools
+- `calm_adapter_training/`: experimental CALM adapter approach
+- `docs/`: setup notes and supporting documentation
 
-VM Access:
+## Quickstart
 
-ReadMe prepared by Joel until Friday
+1. Create an environment and install dependencies:
 
-Cluster Access:
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
 
-Luke: lukef
-Martin: Martins
+2. Prepare data:
 
-GPU VM:
+```bash
+python data_preparation/download_datasets.py --output_dir ./data/raw
+python data_preparation/preprocess_data.py --input_dir ./data/raw --output_dir ./data/processed
+```
 
-Joel: joeldag  
-Sashreek: sashreek  
-Yeasin: alyeasin  
+3. (Optional) Sample FineWeb2:
 
-Temporary Teams:
+```bash
+bash data_sampler/run_fineweb2_sampler.sh
+```
 
-Team 1: English
-Joel ->  GPU VM  
-Harshit
+4. Train an adapter:
 
-Team 2: German  
-Luke -> Cluster  
-Jamil
+```bash
+python language_adapters/train_language_adapter.py --help
+```
 
-Team 3: Japanese  
-Martin -> Cluster  
+5. Evaluate checkpoints:
 
-Team 4: Bengali  
-Sashreek -> GPU VM  
-Yven  
+```bash
+python evaluation/lm_harness_single.py --help
+python evaluation/lm_harness_single_model.py --help
+```
 
-Team 5: Chinese  
-Yeasin -> GPU VM  
+## Reproducibility Notes
 
--> Once singular Models are done -> Generalized model collectively
+- Training/evaluation scripts set deterministic seeds where applicable.
+- Checkpoint artifacts and logs are intentionally excluded from version control.
+- Many run scripts are starter templates and should be adapted via CLI args or environment variables for your infrastructure.
+
+## Artifact Policy
+
+This repository tracks source code, configs, and lightweight metadata only. Large model checkpoints, optimizer states, and run logs are excluded via `.gitignore` and should be stored in artifact storage (for example: W&B artifacts, object storage, or external model registries).

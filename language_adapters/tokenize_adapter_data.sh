@@ -2,7 +2,7 @@
 
 DATA_DIR="/data/fineweb2_subset_belebele" 
 MODEL_NAME="bigscience/bloom-560m"
-TOKENIZED_DIR="./data/joel/test/tokenize-test"
+TOKENIZED_DIR=".${DATA_ROOT:-/path/to/data_root}/test/tokenize-test"
 NUM_PROCESSES=28
 
 python tokenize_adapter_data.py \

@@ -16,4 +16,4 @@
 - `tasks=3` controls how many processes download in parallel **per language**.
   - High `tasks` values may cause **429 Too Many Requests** errors for low-resource languages.
 
-Try with smaller limit values and few langauges in the beginning to see how it works
+Try smaller limit values and a few languages first to validate the pipeline.

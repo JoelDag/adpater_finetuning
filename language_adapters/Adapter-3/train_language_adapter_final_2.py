@@ -11,9 +11,9 @@ from transformers import (
 from peft import LoraConfig, get_peft_model, TaskType
 
 # ─── CONFIG ────────────────────────────────────────────────────────────────
-DEFAULT_TOKENIZED_DIR = "/local/upb/users/h/hpurohit/profiles/unix/cs/HTYLLM - PG/Tokenized_directory/Adapter-4"
+DEFAULT_TOKENIZED_DIR = "./tokenized_data"
 DEFAULT_MODEL_NAME    = "bigscience/bloom-560m"
-DEFAULT_OUTPUT_DIR    = "/local/upb/users/h/hpurohit/profiles/unix/cs/HTYLLM - PG/Final_Output_directory/Adapter-4-final"
+DEFAULT_OUTPUT_DIR    = "./adapter_output"
 DEFAULT_LOGGING_DIR   = os.path.join(DEFAULT_OUTPUT_DIR, "logs")
 BLOCK_SIZE            = 512
 

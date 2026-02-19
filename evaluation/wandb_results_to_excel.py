@@ -1,30 +1,59 @@
+import argparse
+from typing import List
+
 import pandas as pd
 import wandb
 
-# Initialize API and get the run
-api = wandb.Api()
-run = api.run("joeldag-paderborn-university/gemma3-4b-pt-yor_latn_wol_latn-adapter/c7r1xcc4")
 
-# Define target metric and _step
-metric_cols = [
-    "belebele_yor_Latn/acc_none",
-    "belebele_wol_Latn/acc_none",
-               ]  # You may need to update this metric name if it's different for the new run
-columns_to_keep = metric_cols + ["_step"]
+def parse_csv(value: str) -> List[str]:
+    return [item.strip() for item in value.split(",") if item.strip()]
 
-# Steps to extract
-target_steps = [501, 1002, 1503, 2004, 2505, 3006, 3507, 4008, 4509, 5010, 5511]
 
-# Fetch run history
-history = run.history()
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Export selected W&B metrics to Excel.")
+    parser.add_argument(
+        "--run-path",
+        required=True,
+        help="W&B run path in the format entity/project/run_id.",
+    )
+    parser.add_argument(
+        "--metrics",
+        required=True,
+        help="Comma-separated metric names, for example: task_a/acc_none,task_b/acc_none",
+    )
+    parser.add_argument(
+        "--steps",
+        default="",
+        help="Optional comma-separated steps to keep. Leave empty to keep all steps.",
+    )
+    parser.add_argument(
+        "--output",
+        default="wandb_metrics.xlsx",
+        help="Output Excel file path.",
+    )
+    args = parser.parse_args()
 
-# Filter and process
-if set(columns_to_keep).issubset(history.columns):
+    metric_cols = parse_csv(args.metrics)
+    target_steps = [int(step) for step in parse_csv(args.steps)] if args.steps else []
+
+    api = wandb.Api()
+    run = api.run(args.run_path)
+    history = run.history()
+
+    columns_to_keep = metric_cols + ["_step"]
+    missing = [column for column in columns_to_keep if column not in history.columns]
+    if missing:
+        raise ValueError(f"Missing columns in W&B history: {missing}")
+
     df = history[columns_to_keep].copy()
-    df = df[df["_step"].isin(target_steps)]
-    df["row_sum"] = df[metric_cols].sum(axis=1, numeric_only=True)
+    if target_steps:
+        df = df[df["_step"].isin(target_steps)]
 
-    print(df)  # Display the filtered result
-    df.to_excel("gemma_yor_latn_wol_latn.xlsx", index=False)
-else:
-    print("Required columns not found in the run history.")
+    df["row_sum"] = df[metric_cols].sum(axis=1, numeric_only=True)
+    print(df)
+    df.to_excel(args.output, index=False)
+    print(f"Saved {len(df)} rows to {args.output}")
+
+
+if __name__ == "__main__":
+    main()

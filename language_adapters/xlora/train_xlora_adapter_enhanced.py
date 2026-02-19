@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 import torch
 import wandb
@@ -10,6 +11,20 @@ from transformers import (
     DataCollatorForLanguageModeling, BitsAndBytesConfig, AutoConfig
 )
 from lm_harness_eval import LMEvalCallback, LMHarnessEarlyStoppingCallback
+
+def load_adapters(adapters_json_path):
+    with open(adapters_json_path, "r", encoding="utf-8") as f:
+        adapters = json.load(f)
+
+    if not isinstance(adapters, dict) or not adapters:
+        raise ValueError("--adapters_json must contain a non-empty JSON object of {adapter_name: adapter_path}.")
+
+    missing_paths = [path for path in adapters.values() if not os.path.exists(path)]
+    if missing_paths:
+        raise FileNotFoundError(f"Adapter paths not found: {missing_paths}")
+
+    return adapters
+
 
 def train_model(args):
     # init wandb, load data and tokenizer
@@ -39,6 +54,7 @@ def train_model(args):
 
     # xlora config
     model.config.use_cache = False
+    adapters = load_adapters(args.adapters_json)
     model = xlora.add_xlora_to_model(
         model=model,
         xlora_config=xlora.xLoRAConfig(
@@ -47,10 +63,7 @@ def train_model(args):
                 xlora_depth=8,
                 device=torch.device("cuda"),
                 use_trainable_adapters=True,
-                adapters = {
-                    "adapter_1": "./mistral_best_adpater_checkpoints/south_asian_2000_best_checkpoint",
-                    "adapter_2": "./mistral_best_adpater_checkpoints/swh_Latn_sna_Latn_nya_Latn_2500_best_checkpoint",
-                }
+                adapters=adapters,
             ),
             verbose=True
     )
@@ -124,6 +137,7 @@ if __name__ == "__main__":
     parser.add_argument("--model_name", required=True)
     parser.add_argument("--output_dir", required=True)
     parser.add_argument("--logging_dir", required=True)
+    parser.add_argument("--adapters_json", required=True, help="JSON file containing adapter mappings.")
     
     # Training
     parser.add_argument("--train_batch_size", type=int, default=52)

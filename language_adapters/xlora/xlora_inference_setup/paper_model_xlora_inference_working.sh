@@ -1,5 +1,15 @@
-RUST_BACKTRACE=full ./target/debug/mistralrs-server \
-  --port 1234 \
+#!/bin/bash
+
+set -euo pipefail
+
+MISTRALRS_BIN="${MISTRALRS_BIN:-./target/debug/mistralrs-server}"
+PORT="${PORT:-1234}"
+XLORA_MODEL_ID="${XLORA_MODEL_ID:-./x-lora}"
+ORDERING_FILE="${ORDERING_FILE:-./example-xlora-ordering.json}"
+RUST_BACKTRACE="${RUST_BACKTRACE:-full}"
+
+RUST_BACKTRACE="$RUST_BACKTRACE" "$MISTRALRS_BIN" \
+  --port "$PORT" \
   x-lora \
-  --xlora-model-id /upb/users/j/joeldag/profiles/unix/cs/repos_i_cloned_bc_cool/x-lora \
-  -o /upb/users/j/joeldag/profiles/unix/cs/repos_i_cloned_bc_cool/x-lora/example-xlora-ordering.json
+  --xlora-model-id "$XLORA_MODEL_ID" \
+  -o "$ORDERING_FILE"

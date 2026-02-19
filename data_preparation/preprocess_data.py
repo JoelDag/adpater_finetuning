@@ -6,9 +6,7 @@ import logging
 from datasets import load_dataset
 from transformers import AutoTokenizer
 
-"""
-Retrieve Text from differnt json structures in different datasets
-"""
+"""Retrieve text from different JSON structures across datasets."""
 def extract_text(example):
     if "text" in example and example["text"]:
         return example["text"]
@@ -30,7 +28,7 @@ def main():
     parser.add_argument("--output_dir", default=os.getenv("OUTPUT_DIR", "./output"))
     parser.add_argument("--datasets", nargs="+", required=True)
     parser.add_argument("--tokenizer", default=os.getenv("TOKENIZER", "microsoft/phi-2"))
-    parser.add_argument("--hf_cache_dir", default=os.getenv("HF_CACHE_DIR", "/data/hf_cache/"))
+    parser.add_argument("--hf_cache_dir", default=os.getenv("HF_CACHE_DIR", os.path.expanduser("~/.cache/huggingface")))
     parser.add_argument("--chunk_size", type=int, default=2048)
     parser.add_argument('--log_level', type=str, default='INFO', help='Logging level')
     args = parser.parse_args()
@@ -61,9 +59,7 @@ def main():
         dataset_output_dir = os.path.join(args.output_dir, f"{dataset_name.replace('/', '_')}_{dataset_config}")
         os.makedirs(dataset_output_dir, exist_ok=True)
         
-        all_tokens = []
         shard = []
-        chunk_count = 0
         start_time = time.time()
 
         for idx, example in enumerate(subset):
@@ -76,24 +72,17 @@ def main():
 
             if len(tokens) < 5:
                 continue
-            #all_tokens.extend(tokens)
             shard.append({"tokens": tokens})
 
-            while len(all_tokens) >= args.chunk_size:
-                chunk = all_tokens[:args.chunk_size]
-                all_tokens = all_tokens[args.chunk_size:]
-                shard.append({"tokens": chunk})
-                chunk_count += 1
-
             if idx % 10000 == 0:
-                logging.info(f"Processed {idx} examples, {chunk_count} chunks ready so far.")
+                logging.info(f"Processed {idx} examples, {len(shard)} chunks ready so far.")
 
         output_path = os.path.join(dataset_output_dir, f"shard_{proc_rank}.json")
         logging.info(f"Saving {len(shard)} chunks to {output_path}")
         with open(output_path, "w", encoding="utf-8") as f_out:
             json.dump(shard, f_out)
         elapsed = time.time() - start_time
-        logging.info(f"Process {proc_rank}/{total_procs}: {chunk_count} chunks saved in {elapsed:.2f}s.")
+        logging.info(f"Process {proc_rank}/{total_procs}: {len(shard)} chunks saved in {elapsed:.2f}s.")
 
 if __name__ == "__main__":
     main()
